@@ -2,7 +2,7 @@ from flask import render_template, url_for, redirect, flash
 from narjesvoices import app, db, bcrypt
 from narjesvoices.forms import RegistrationForm, LoginForm
 from narjesvoices.models import User, Post
-from flask_login import login_user, current_user
+from flask_login import login_user, logout_user, current_user
 
 
 
@@ -42,3 +42,7 @@ def login():
             flash('Login Unsuccessful. Please check email and password', 'danger')
     return render_template('login.html', title='Login', form=form)
     
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
