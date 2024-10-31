@@ -1,6 +1,6 @@
 from flask import render_template, url_for, redirect, flash, request
 from narjesvoices import app, db, bcrypt
-from narjesvoices.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from narjesvoices.forms import RegistrationForm, LoginForm, UpdateAccountForm, PostForm
 from narjesvoices.models import User, Post
 from flask_login import login_user, logout_user, current_user, login_required
 
@@ -9,7 +9,8 @@ from flask_login import login_user, logout_user, current_user, login_required
 @app.route("/")
 @app.route("/home")
 def home():
-    return render_template('home.html',)
+    posts = Post.query.all()
+    return render_template('home.html', posts=posts)
 
 
 
@@ -59,3 +60,20 @@ def account():
         flash('Your account has been updated!', 'success')
         return redirect(url_for('account'))
     return render_template('account.html', title='Account', form=form)
+
+@app.route("/post/new", methods=['GET', 'POST'])
+@login_required
+def new_post():
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(title=form.title.data, content=form.content.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been created!', 'success')
+        return redirect(url_for('home'))
+    return render_template('create_post.html', title='New Post', form=form, legend='New Post')
+
+@app.route("/post/<int:post_id>")
+def post(post_id):
+    post = Post.query.get_or_404(post_id)
+    return render_template('post.html', title=post.title, post=post)
