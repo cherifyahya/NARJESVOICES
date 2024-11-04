@@ -58,3 +58,11 @@ Assuming you have Python, proceed to install the rest using the command below:
    ```
 4. **Open the application**
    visit `http://127.0.0.1:5000` in your browser
+
+# Built using
+- Flask
+- SQLAlchemy
+  
+## Acknowledgments
+
+- Special thanks to alx software engineering mentors 
